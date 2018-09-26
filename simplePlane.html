@@ -1,0 +1,47 @@
+<html>
+
+<head>
+</head>
+
+<body>
+    <canvas id="myCanvas" height=600 width=1200 style="background:black"></canvas>
+</body>
+<script>
+    var canvas = document.getElementById('myCanvas'),
+        context = canvas.getContext('2d');
+
+    var Plane = function (x, y, color) {
+        this.x = x || 0;
+        this.y = y || 0;
+        this.color = color;
+        this.height = 50;
+        this.width = 100;
+        this.draw = function (context) {
+            context.restore();
+            context.beginPath();
+            context.moveTo(this.x, this.y);
+            context.lineTo(this.x - this.width, this.y);
+            context.lineTo(this.x - this.width, this.y - this.height);
+            context.lineTo(this.x, this.y);
+            context.closePath();
+            context.fillStyle = this.color;
+            context.strokeStyle = this.color;
+            context.fill();
+            context.save();
+        }
+
+    }
+
+    var p = new Plane(canvas.width / 2, canvas.height / 2, 'white');
+
+    p.draw(context);
+    // (function drawFrame() {
+
+
+
+    // })()
+
+
+</script>
+
+</html>
