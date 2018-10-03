@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="js/utils.js"></script>
+</head>
+
+<body>
+    <!-- <canvas id="myCanvas" height=800 width=1200 style="background:black;"></canvas> -->
+    <canvas id="myCanvas" height=800 width=1200></canvas>
+</body>
+<script>
+    var canvas = document.getElementById('myCanvas'),
+        context = canvas.getContext('2d');
+
+    var Enemy = function () {
+        this.x = cavnas.clientWidth;
+        this.y = utils.ranInt(canvas.clientHeight);
+    }
+
+
+</script>
+
+</html>

@@ -1,0 +1,71 @@
+<html>
+
+<head>
+</head>
+
+<body>
+    <canvas id="myCanvas" height=600 width=1200 style="background:black"></canvas>
+</body>
+<script>
+    var canvas = document.getElementById('myCanvas'),
+        context = canvas.getContext('2d');
+    var Star = function (x, y, color) {
+        this.x = x || 0;
+        this.y = y || 0;
+        this.vx = -1;
+        this.raduis = 1;
+        this.color = color || color;
+        this.draw = function (context) {
+            context.restore();
+            context.beginPath();
+            context.arc(this.x, this.y, this.raduis, 0, Math.PI * 2, false);
+            context.closePath();
+            context.fillStyle = this.color;
+            context.strokeStyle = this.color;
+            context.fill();
+            context.save();
+        }
+    }
+    var BgStarts = function (num) {
+        this.stars = [];
+        this.starsNum = num || 20;
+        this.generate = function () {
+            this.stars = [];
+            for (let i = 0; i < this.starsNum; i++) {
+                let s = new Star(utils.ranNum(canvas.clientWidth), utils.ranNum(canvas.clientHeight), utils.ranColor());
+                s.raduis = utils.ranNum(2) + 1;
+                s.vx = -utils.ranNum(2) - 1;
+                this.stars.push(s);
+            }
+        };
+        this.draw = function (context) {
+            for (var s of this.stars) {
+                s.x += s.vx;
+                if (s.x < 0) {
+                    s.x = canvas.clientWidth + utils.ranNum(20); //加个扰动因子，要么太枯燥了
+                    s.y = utils.ranNum(canvas.clientHeight);//同理，这样还能增加层次感
+                }
+                s.draw(context);
+            }
+        };
+    }
+    utils = {
+        ranColor: function () {
+            return "rgb(" + this.ranNum(255) + "," + this.ranNum(255) + "," + this.ranNum(255) + ")";
+        },
+        ranNum: function (base) {
+            base = base || 100;
+            return Math.floor(Math.random() * base);
+        }
+    }
+    var bgStars = new BgStarts();
+    bgStars.generate();
+    bgStars.draw(context);
+    (function drawFrame() {
+        window.requestAnimationFrame(drawFrame);
+        context.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+        bgStars.draw(context);
+    })()
+</script>
+
+</html>

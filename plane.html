@@ -1,0 +1,139 @@
+<html>
+
+<head>
+    <script src="js/utils.js"></script>
+    <script src="js/background.js"></script>
+</head>
+
+<body>
+    <canvas id="myCanvas" height=600 width=1200 style="background:black"></canvas>
+</body>
+<script>
+    var canvas = document.getElementById('myCanvas'),
+        context = canvas.getContext('2d'),
+        lazerLength = 220,
+        disappearLength = canvas.clientWidth + lazerLength;
+
+
+    var Plane = function (x, y, color) {
+        this.x = x || 0;
+        this.y = y || 0;
+        this.color = color;
+        this.height = 50;
+        this.width = 100;
+        this.vy = 5;
+        this.vx = 5;
+        this.draw = function (context) {
+            context.restore();
+            context.beginPath();
+            context.moveTo(this.x, this.y);
+            context.lineTo(this.x - this.width, this.y);
+            context.lineTo(this.x - this.width, this.y - this.height);
+            context.lineTo(this.x, this.y);
+            context.closePath();
+            context.fillStyle = this.color;
+            context.strokeStyle = this.color;
+            context.fill();
+            context.save();
+        }
+        this.shoot = function () {
+            var l = new Lazer(this.x, this.y);
+            l.draw(context);
+            var d = new Date();
+            lazers[d.getTime()] = l;
+        }
+    }
+
+
+    var Lazer = function (x, y, length) {
+        this.x = x || 0;
+        this.y = y || 0;
+        this.length = lazerLength;
+        this.used = true;
+        this.vx = 10;
+        this.draw = function (context) {
+            context.beginPath()
+            context.moveTo(this.x, this.y);
+            context.lineTo(this.x + this.length, this.y);
+            context.fillStyle = 'white';
+            context.strokeStyle = 'white';
+            context.closePath();
+            context.stroke();
+            context.fill();
+        }
+    }
+
+
+    var bgStars = new BgStarts();
+    bgStars.generate();
+    bgStars.draw(context);
+    var lazers = {};
+    var p = new Plane(200, canvas.height / 2, 'white');
+    p.draw(context);
+
+
+    document.body.onkeydown = function (event) {
+        switch (event.keyCode) {
+            case 74:
+                p.shoot();
+                break;
+            case 38:
+            case 87:
+                p.y -= p.vy;
+                break;
+            case 40:
+            case 83:
+                p.y += p.vy;
+                break;
+            default:
+                break;
+        }
+
+    };
+
+
+    document.body.onkeypress = function (event) {
+        switch (event.keyCode) {
+            case 106:
+            case 74:
+                p.shoot();
+                break;
+            case 38:
+            case 119:
+            case 87:
+                p.y -= p.vy;
+                break;
+            case 40:
+            case 115:
+            case 83:
+                p.y += p.vy;
+                break;
+            default:
+                break;
+        }
+        console.log(event);
+    };
+
+
+
+    (function drawFrame() {
+        window.requestAnimationFrame(drawFrame);
+        context.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+
+        p.draw(context);
+        for (var x in lazers) {
+            var current = lazers[x];
+            if (current.x <= disappearLength) {
+                current.x += current.vx;
+                current.draw(context);
+            } else {
+                delete lazers[x];
+            }
+        }
+        bgStars.draw(context);
+
+
+    })();
+</script>
+
+</html>
