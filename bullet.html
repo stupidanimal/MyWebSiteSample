@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <canvas id="myCanvas" height=800 width=1200 style="background:black;"></canvas>
+</body>
+<script>
+    var canvas = document.getElementById('myCanvas'),
+        context = canvas.getContext('2d'),
+        lazerLength = 220,
+        disappearLength = canvas.clientWidth + lazerLength;
+
+
+
+    var Lazer = function (x, y, length) {
+        this.x = x || 0;
+        this.y = y || 0;
+        this.length = lazerLength;
+        this.used = true;
+        this.vx = 10;
+        this.draw = function (context) {
+            context.beginPath()
+            context.moveTo(this.x, this.y);
+            context.lineTo(this.x + this.length, this.y);
+            context.fillStyle = 'white';
+            context.strokeStyle = 'white';
+            context.closePath();
+            context.stroke();
+            context.fill();
+        }
+    }
+
+
+
+    var lazers = {};
+
+
+    document.body.onkeydown = function (event) {
+        if (event.keyCode == 74) {
+            var l = new Lazer(
+                0,
+                Math.ceil(Math.random() * canvas.clientHeight)
+            );
+            l.draw(context);
+            var d = new Date();
+            lazers[d.getTime()] = l;
+        }
+    };
+
+
+
+
+
+    (function drawFrame() {
+        window.requestAnimationFrame(drawFrame);
+        context.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+
+        for (var x in lazers) {
+            var current = lazers[x];
+            if (current.x <= disappearLength) {
+                current.x += current.vx;
+                current.draw(context);
+            } else {
+                delete lazers[x];
+            }
+        }
+    })();
+
+
+
+
+</script>
+
+</html>
