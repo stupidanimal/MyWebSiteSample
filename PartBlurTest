@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        * {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        #bgImg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            filter: blur(5px);
+        }
+
+        #myCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <img src='girls01.jpg' id='bgImg'>
+    <canvas id='myCanvas' height=600 width=400></canvas>
+</body>
+<script>
+    var canvas = document.getElementById('myCanvas'),
+        context = canvas.getContext('2d');
+    var img = document.getElementById('bgImg');
+    img.onload = function () {
+        img.style.height = canvas.clientHeight + 'px';
+        img.style.width = canvas.clientWidth + 'px';
+
+    }
+
+
+
+
+    canvas.onmouseenter = function () {
+        canvas.onmousemove = mouseMove;
+    }
+
+    function mouseMove(event) {
+        context.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+        var x = event.clientX,
+            y = event.clientY;
+        context.save();
+        context.beginPath();
+
+        context.arc(
+            x, y,
+            100,
+            0,
+            Math.PI * 2,
+            false
+        );
+        context.clip();
+        context.closePath();
+        context.drawImage(img, 0, 0, canvas.width, canvas.height);
+        context.restore();
+
+    }
+
+    canvas.onmouseleave = function () {
+        canvas.onmousemove = undefined;
+    }
+
+
+
+
+
+</script>
+
+</html>
